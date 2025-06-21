@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+.venv/
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store

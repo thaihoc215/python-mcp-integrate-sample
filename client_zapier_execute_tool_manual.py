@@ -1,7 +1,6 @@
 import asyncio
 import sys
 import traceback
-from urllib.parse import urlparse
 from dotenv import load_dotenv
 import os
 
@@ -44,66 +43,32 @@ async def main():
     
 
     try:
-        # Create and use a client session
-        # async with ClientSession(server_params) as client:
-        #     # List available tools
-        #     tools = await client.list_tools()
-        #     print("Available tools:", tools)
-
         # Create SSE client streams
         async with sse_client(url=zapier_mcp_url) as (read, write):
             # Create and use a client session
             print("sse_client: ", zapier_mcp_url)
             async with ClientSession(read, write) as session:
                 await session.initialize()
-                # tools = await session.list_tools()
                 print("Available tools:", await session.list_tools())
                 # print("Available promts:", await session.list_prompts())
                 # print("Available resources:", await session.list_resources())
-                
-                # Example: Call a tool (adjust based on available tools)
-                # tool_name = "gmail_send_email"
-                # arguments = {"to": "example@example.com", "subject": "Hello", "body": "World"}
-                # result = await session.call_tool(tool_name, arguments)
-                # print("Tool result:", result)
 
                 # Example: Call a tool (adjust based on available tools)
                 tool_name = "gmail_send_email"
                 arguments = {
+                    "instructions": "Send a test email to HaThaiHoc.Nguyen@lofty.com using the MCP Zapier integration.",
+                    "to": "HaThaiHoc.Nguyen@lofty.com",
                     "subject": "Test Email from MCP Client",
                     "body": "This is a test email sent through the Zapier MCP integration."
                 }
-                # try:
-                #     result = await session.call_tool(tool_name, arguments)
-                #     print("Tool result:", result)
-                # except Exception as tool_exc:
-                #     print(f"Error calling {tool_name}:")
-                #     traceback.print_exception(
-                #         type(tool_exc), tool_exc, tool_exc.__traceback__
-                #     )
-
-        # async with sse_client(server_url) as streams:
-        #     async with ClientSession(streams[0], streams[1]) as session:
-        #         await session.initialize()
-        #         print("Connected to MCP server at", server_url)
-        #         print_items("tools", await session.list_tools())
-        #         print_items("resources", await session.list_resources())
-        #         print_items("prompts", await session.list_prompts())
-
-        #         if article_url:
-        #             print("\nCalling read_wikipedia_article tool...")
-        #             try:
-        #                 # Use the documented call_tool method to invoke the tool
-        #                 response = await session.call_tool(
-        #                     "read_wikipedia_article", arguments={"url": article_url}
-        #                 )
-        #                 print("\n=== Wikipedia Article Markdown Content ===\n")
-        #                 print(response)
-        #             except Exception as tool_exc:
-        #                 print("Error calling read_wikipedia_article tool:")
-        #                 traceback.print_exception(
-        #                     type(tool_exc), tool_exc, tool_exc.__traceback__
-        #                 )
+                try:
+                    result = await session.call_tool(tool_name, arguments)
+                    print("Tool result:", result)
+                except Exception as tool_exc:
+                    print(f"Error calling {tool_name}:")
+                    traceback.print_exception(
+                        type(tool_exc), tool_exc, tool_exc.__traceback__
+                    )
     except Exception as e:
         print(f"Error connecting to server: {e}")
         traceback.print_exception(type(e), e, e.__traceback__)

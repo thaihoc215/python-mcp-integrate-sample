@@ -14,7 +14,7 @@ load_dotenv()
 
 async def main():
     
-    zapier_mcp_url = os.getenv("ZAPIER_MCP_URL")
+    zapier_mcp_url = os.getenv("ZAPIER_MCP_URL", "http://localhost:8000/sse")
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
     try:

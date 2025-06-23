@@ -36,6 +36,8 @@ async def main():
         print(f"ExceptionGroup occurred: {eg}")
         for exc in eg.exceptions:
             print(f"  Sub-exception: {exc}")
+            # print type of exception
+            print(f"  Exception type: {type(exc)}")
             if hasattr(exc, 'response') and hasattr(exc.response, 'status_code'):
                 if exc.response.status_code == 401:
                     print("Authentication failed. Please check your ZAPIER_STREAMABLE_URL or API credentials.")

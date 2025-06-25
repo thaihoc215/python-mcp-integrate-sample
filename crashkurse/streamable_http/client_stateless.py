@@ -13,25 +13,25 @@ async def main():
         async with streamablehttp_client(url) as (read, write, get_session_id):
             print(f"Connecting to Streamable HTTP MCP server at: {url}")
             async with ClientSession(read, write) as session:
-                # await session.initialize()            # JSON-RPC „initialize“
-                
+                # await session.initialize()
+                # is still required for protocol compliance and discovery, but it does not imply the server will remember you between requests in stateless mode.
                 # list tools and print them
                 tools = await session.list_tools()    # JSON-RPC „list_tools“
                 print(f"Available tools: {tools}")
                 # for tool in tools:
                 #     print(f" * {tool.name} - {tool.description}")
-                if os.getenv("ZAPIER_STREAMABLE_TEST_ADD", ""):
-                    result = await session.call_tool("add", {"a": 21, "b": 21})
-                    print("Result from server:", result)
-                else:
-                    arguments = {
-                        "instructions": "Send a test email to xxx@gmail.com with subject and body.",
-                        "subject": "Test Email from MCP Client 123",
-                        "body": "This is a test email sent through the Zapier MCP integration 123."
-                    }
-                    result = await session.call_tool("gmail_send_email", arguments)
-                    print("Result from server:", result)
-                    pass
+                # if os.getenv("ZAPIER_STREAMABLE_TEST_ADD", ""):
+                #     result = await session.call_tool("add", {"a": 21, "b": 21})
+                #     print("Result from server:", result)
+                # else:
+                #     arguments = {
+                #         "instructions": "Send a test email to xxx@gmail.com with subject and body.",
+                #         "subject": "Test Email from MCP Client 123",
+                #         "body": "This is a test email sent through the Zapier MCP integration 123."
+                #     }
+                #     result = await session.call_tool("gmail_send_email", arguments)
+                #     print("Result from server:", result)
+                #     pass
     except* Exception as eg:  # Python 3.11+ ExceptionGroup handling
         print(f"ExceptionGroup occurred: {eg}")
         for exc in eg.exceptions:
@@ -63,3 +63,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+    
+# for initialization
+# You must call await session.initialize() for both, but only stateful servers keep data and context between requests. Stateless servers require you to provide all necessary info with each call, as they forget everything between requests. The initialization step is just a protocol handshake, not a guarantee of session persistence.
